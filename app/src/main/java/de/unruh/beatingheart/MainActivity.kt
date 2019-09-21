@@ -19,7 +19,6 @@ import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.animation.doOnEnd
 import androidx.core.animation.doOnStart
-import java.lang.RuntimeException
 import kotlin.random.Random
 
 /* TODO: Document media source:
@@ -32,6 +31,23 @@ import kotlin.random.Random
  *
  * TODO: Slightly different background color (depends on proximity?)
  */
+
+class SoundPlayer(private val context: Context, private val sound: Int) {
+    fun play() {
+        for (player in players) {
+          if (!player.isPlaying) {
+              player.start()
+              return
+          }
+        }
+
+        val player = MediaPlayer.create(context, sound)
+        players.add(player)
+        player.start()
+    }
+
+    private val players : MutableList<MediaPlayer> = ArrayList()
+}
 
 class AnimatorLooper(vararg animations: Animator, delay: Int = 1000) {
     fun start() {
@@ -80,16 +96,15 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
     private val maxHeartDelay by lazy { resources.getInteger(R.integer.maxHeartDelay) }
     private val minHeartDelay by lazy { resources.getInteger(R.integer.minHeartDelay) }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        audio.release()
-    }
+//    override fun onDestroy() {
+//        super.onDestroy()
+////        audio.release()
+//    }
 
     private val sensorManager by lazy { getSystemService(Context.SENSOR_SERVICE) as SensorManager }
     private val proximitySensor by lazy { sensorManager.getDefaultSensor(Sensor.TYPE_PROXIMITY) }
 
-
-    private val audio by lazy { MediaPlayer.create(this, R.raw.heartsound) }
+    private val soundPlayer = SoundPlayer(this, R.raw.heartsound)
 
     private val heart : ImageView by lazy { findViewById<ImageView>(R.id.heart) }
 
@@ -98,15 +113,9 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
             setTarget(heart)
             doOnStart {
                 try {
-                    // TODO get rid of the click noise
-                    // seekTo ensures that the audio restarts even if it hasn't finished playing yet
-                    audio.seekTo(0)
-                    audio.start()
-//                    MediaPlayer.create(this@MainActivity, R.raw.heartsound).apply {
-//                        start()
-//                    }
+                    soundPlayer.play()
                 } catch (e : Throwable) {
-                    incCount(e)
+                    debugMessage(e)
                 }
             }
         }
@@ -130,7 +139,7 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
                     View.SYSTEM_UI_FLAG_HIDE_NAVIGATION or
                     View.SYSTEM_UI_FLAG_IMMERSIVE
 
-        incCount("min/max $minHeartDelay $maxHeartDelay ${R.integer.minHeartDelay} ${R.integer.animDelay1}")
+        debugMessage("min/max $minHeartDelay $maxHeartDelay ${R.integer.minHeartDelay} ${R.integer.animDelay1}")
     }
 
     override fun onPause() {
@@ -155,7 +164,7 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
     private var count = 0
     // TODO remove
     @SuppressLint("SetTextI18n")
-    fun incCount(msg: Any = "") {
+    fun debugMessage(msg: Any = "") {
         count ++
         val textView = findViewById<TextView>(R.id.textView2)
         val text = textView.text.lines()
