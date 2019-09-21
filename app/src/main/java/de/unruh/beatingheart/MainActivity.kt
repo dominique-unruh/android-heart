@@ -29,9 +29,11 @@ import kotlin.random.Random
  * TODO: require proximity sensor in manifest
  *
  * TODO: Adjust min/max heart rate nicely
+ *
+ * TODO: Slightly different background color (depends on proximity?)
  */
 
-class AnimatorLooper(vararg animations: Animator, delay: Long = 1000) {
+class AnimatorLooper(vararg animations: Animator, delay: Int = 1000) {
     fun start() {
         animSet.start()
     }
@@ -46,17 +48,17 @@ class AnimatorLooper(vararg animations: Animator, delay: Long = 1000) {
         animSet.resume()
     }
 
-    var delay = delay
+    var delay : Int = delay
         set(value) {
             if (!animSet.isRunning) // Changing this while isRunning confuses inner animator's delay for some reason
-                animSet.startDelay = value
+                animSet.startDelay = value.toLong()
             field = value
         }
 
     private val animSet = AnimatorSet().apply {
         playSequentially(*animations)
         doOnEnd {
-            startDelay = this@AnimatorLooper.delay
+            startDelay = this@AnimatorLooper.delay.toLong()
             start()
         }
     }
@@ -71,12 +73,12 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
 
         val heartRate = (proximity/maxProximity) * (maxHeartDelay-minHeartDelay) + minHeartDelay
 
-        looper.delay = heartRate.toLong()
+        looper.delay = heartRate.toInt()
     }
 
     override fun onAccuracyChanged(sensor: Sensor?, accuracy: Int) {}
-    private var maxHeartDelay = 3000L
-    private var minHeartDelay = 0L
+    private val maxHeartDelay by lazy { resources.getInteger(R.integer.maxHeartDelay) }
+    private val minHeartDelay by lazy { resources.getInteger(R.integer.minHeartDelay) }
 
     override fun onDestroy() {
         super.onDestroy()
@@ -118,7 +120,7 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
         looper.start()
 
         heart.setOnClickListener {
-            looper.delay = Random.nextLong(minHeartDelay, maxHeartDelay)
+            looper.delay = Random.nextInt(minHeartDelay, maxHeartDelay)
 //            looper.delay = 0L
         }
 
@@ -127,6 +129,8 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
                     View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION or
                     View.SYSTEM_UI_FLAG_HIDE_NAVIGATION or
                     View.SYSTEM_UI_FLAG_IMMERSIVE
+
+        incCount("min/max $minHeartDelay $maxHeartDelay ${R.integer.minHeartDelay} ${R.integer.animDelay1}")
     }
 
     override fun onPause() {
