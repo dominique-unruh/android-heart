@@ -94,22 +94,16 @@ class MainActivity : AppCompatActivity() {
             looper.delay = Random.nextLong(0, 2000)
 //            looper.delay = 0L
         }
-
-        heart.
     }
 
     override fun onPause() {
         super.onPause()
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            looper.pause()
-        }
+        looper.pause()
     }
 
     override fun onResume() {
         super.onResume()
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            looper.resume()
-        }
+        looper.resume()
     }
 
     // TODO remove
