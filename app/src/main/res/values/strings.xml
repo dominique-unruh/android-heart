@@ -1,4 +1,16 @@
 <resources>
     <string name="app_name">Beating Heart</string>
     <string name="heart_description">A beating heart</string>
+    <string name="about">
+        \n\n\n\n
+        <b>A beating heart.</b>\n
+        \n
+        Try approaching the phone with your hand…\n
+        \n
+        By Dominique Unruh, MIT License\n
+        \n
+        <b>Attributions</b>\n\n
+        * Heartbeat sound: "Human Heartbeat Sound", Daniel Simion, http://soundbible.com/2162-Human-Heartbeat.html, CC-BY 3.0 (modified by D. Unruh)\n\n
+        * Heart image: "Fancy Heart", Jean Beaufort, https://www.publicdomainpictures.net/en/view-image.php?image=234702&amp;picture=fancy-heart, CC0 1.0 (modified by D. Unruh)
+    </string>
 </resources>

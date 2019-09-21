@@ -5,6 +5,7 @@ import android.animation.AnimatorInflater
 import android.animation.AnimatorSet
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.Intent
 import android.hardware.Sensor
 import android.hardware.SensorEvent
 import android.hardware.SensorEventListener
@@ -21,11 +22,9 @@ import androidx.core.animation.doOnEnd
 import androidx.core.animation.doOnStart
 import kotlin.random.Random
 
-/* TODO: Document media source:
- * Audio: http://soundbible.com/2162-Human-Heartbeat.html
- * Image: https://www.publicdomainpictures.net/en/view-image.php?image=234702&picture=fancy-heart
+/* TODO: Slightly different background color (depends on proximity?)
  *
- * TODO: Slightly different background color (depends on proximity?)
+ * TODO: remove debug text field
  */
 
 class SoundPlayer(private val context: Context, private val sound: Int) {
@@ -127,6 +126,11 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
         heart.setOnClickListener {
             looper.delay = Random.nextInt(minHeartDelay, maxHeartDelay)
 //            looper.delay = 0L
+        }
+
+        heart.setOnLongClickListener {
+            startActivity(Intent(this, AboutActivity::class.java))
+            true
         }
 
         window.decorView.systemUiVisibility =
