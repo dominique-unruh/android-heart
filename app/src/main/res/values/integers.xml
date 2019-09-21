@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <integer name="maxHeartDelay">3000</integer>
-    <integer name="minHeartDelay">0</integer>
+    <integer name="minHeartDelay">700</integer>
     <integer name="animDelay1">150</integer>
     <integer name="animDelay2">180</integer>
 </resources>
