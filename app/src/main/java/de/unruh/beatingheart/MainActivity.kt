@@ -22,9 +22,7 @@ import androidx.core.animation.doOnEnd
 import androidx.core.animation.doOnStart
 import kotlin.random.Random
 
-/* TODO: Slightly different background color (depends on proximity?)
- *
- * TODO: remove debug text field
+/* TODO: remove debug text field
  */
 
 class SoundPlayer(private val context: Context, private val sound: Int) {
