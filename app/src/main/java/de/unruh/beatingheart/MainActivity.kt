@@ -4,6 +4,11 @@ import android.animation.Animator
 import android.animation.AnimatorInflater
 import android.animation.AnimatorSet
 import android.annotation.SuppressLint
+import android.content.Context
+import android.hardware.Sensor
+import android.hardware.SensorEvent
+import android.hardware.SensorEventListener
+import android.hardware.SensorManager
 import android.media.MediaPlayer
 import android.os.Build
 import android.os.Bundle
@@ -20,6 +25,10 @@ import kotlin.random.Random
 /* TODO: Document media source:
  * Audio: http://soundbible.com/2162-Human-Heartbeat.html
  * Image: https://www.publicdomainpictures.net/en/view-image.php?image=234702&picture=fancy-heart
+ *
+ * TODO: require proximity sensor in manifest
+ *
+ * TODO: Adjust min/max heart rate nicely
  */
 
 class AnimatorLooper(vararg animations: Animator, delay: Long = 1000) {
@@ -39,7 +48,8 @@ class AnimatorLooper(vararg animations: Animator, delay: Long = 1000) {
 
     var delay = delay
         set(value) {
-            animSet.startDelay = value
+            if (!animSet.isRunning) // Changing this while isRunning confuses inner animator's delay for some reason
+                animSet.startDelay = value
             field = value
         }
 
@@ -52,14 +62,30 @@ class AnimatorLooper(vararg animations: Animator, delay: Long = 1000) {
     }
 }
 
-class MainActivity : AppCompatActivity() {
-//    private var heartDelay = 3000L
-//    private val heartBeatDuration = 200L
+class MainActivity : AppCompatActivity(), SensorEventListener {
+    override fun onSensorChanged(event: SensorEvent?) {
+        if (event==null) return
+
+        val proximity = event.values[0]
+        val maxProximity = proximitySensor.maximumRange
+
+        val heartRate = (proximity/maxProximity) * (maxHeartDelay-minHeartDelay) + minHeartDelay
+
+        looper.delay = heartRate.toLong()
+    }
+
+    override fun onAccuracyChanged(sensor: Sensor?, accuracy: Int) {}
+    private var maxHeartDelay = 3000L
+    private var minHeartDelay = 0L
 
     override fun onDestroy() {
         super.onDestroy()
         audio.release()
     }
+
+    private val sensorManager by lazy { getSystemService(Context.SENSOR_SERVICE) as SensorManager }
+    private val proximitySensor by lazy { sensorManager.getDefaultSensor(Sensor.TYPE_PROXIMITY) }
+
 
     private val audio by lazy { MediaPlayer.create(this, R.raw.heartsound) }
 
@@ -84,7 +110,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private val looper by lazy { AnimatorLooper(heartAnimator) }
+    private val looper by lazy { AnimatorLooper(heartAnimator, delay = maxHeartDelay) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -92,7 +118,7 @@ class MainActivity : AppCompatActivity() {
         looper.start()
 
         heart.setOnClickListener {
-            looper.delay = Random.nextLong(0, 2000)
+            looper.delay = Random.nextLong(minHeartDelay, maxHeartDelay)
 //            looper.delay = 0L
         }
 
@@ -106,10 +132,18 @@ class MainActivity : AppCompatActivity() {
     override fun onPause() {
         super.onPause()
         looper.pause()
+        sensorManager.unregisterListener(this)
     }
 
     override fun onResume() {
         super.onResume()
+
+        proximitySensor?.also { proximity ->
+            sensorManager.registerListener(this, proximity, SensorManager.SENSOR_DELAY_NORMAL)
+        }
+
+        looper.delay = maxHeartDelay
+
         looper.resume()
     }
 
