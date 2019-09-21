@@ -3,6 +3,13 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="de.unruh.beatingheart">
 
+    <uses-feature
+        android:name="android.hardware.sensor.proximity"
+        android:required="true" />
+
+
+    <uses-permission android:name="android.hardware.sensor.proximity" />
+
     <application
         android:allowBackup="true"
         android:icon="@drawable/heart"

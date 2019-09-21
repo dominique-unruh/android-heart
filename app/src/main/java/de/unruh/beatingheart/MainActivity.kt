@@ -25,10 +25,6 @@ import kotlin.random.Random
  * Audio: http://soundbible.com/2162-Human-Heartbeat.html
  * Image: https://www.publicdomainpictures.net/en/view-image.php?image=234702&picture=fancy-heart
  *
- * TODO: require proximity sensor in manifest
- *
- * TODO: Adjust min/max heart rate nicely
- *
  * TODO: Slightly different background color (depends on proximity?)
  */
 
