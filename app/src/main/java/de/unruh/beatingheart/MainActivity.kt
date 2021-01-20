@@ -22,9 +22,6 @@ import androidx.core.animation.doOnEnd
 import androidx.core.animation.doOnStart
 import kotlin.random.Random
 
-/* TODO: remove debug text field
- */
-
 class SoundPlayer(private val context: Context, private val sound: Int) {
     fun play() {
         for (player in players) {
@@ -136,8 +133,6 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
                     View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION or
                     View.SYSTEM_UI_FLAG_HIDE_NAVIGATION or
                     View.SYSTEM_UI_FLAG_IMMERSIVE
-
-        debugMessage("min/max $minHeartDelay $maxHeartDelay ${R.integer.minHeartDelay} ${R.integer.animDelay1}")
     }
 
     override fun onPause() {
@@ -158,15 +153,12 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
         looper.resume()
     }
 
-    // TODO remove
-    private var count = 0
-    // TODO remove
-    @SuppressLint("SetTextI18n")
+//    private var count = 0
     fun debugMessage(msg: Any = "") {
-        count ++
-        val textView = findViewById<TextView>(R.id.textView2)
-        val text = textView.text.lines()
-        val text2 = text.takeLast(10) + "$count $msg"
-        textView.text = text2.joinToString(separator = "\n")
+//        count ++
+//        val textView = findViewById<TextView>(R.id.textView2)
+//        val text = textView.text.lines()
+//        val text2 = text.takeLast(10) + "$count $msg"
+//        textView.text = text2.joinToString(separator = "\n")
     }
 }

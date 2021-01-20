@@ -3,6 +3,12 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="de.unruh.beatingheart">
 
+    <uses-feature
+        android:name="android.hardware.sensor.proximity"
+        android:required="true" />
+
+    <uses-permission android:name="android.hardware.sensor.proximity" />
+
     <application
         android:allowBackup="true"
         android:icon="@drawable/heart"
@@ -12,7 +18,8 @@
         android:theme="@style/AppTheme"
         tools:ignore="AllowBackup">
 
-        <activity android:name=".AboutActivity" />
+        <activity android:name=".AboutActivity"
+            android:theme="@style/AboutTheme"/>
 
         <activity android:name=".MainActivity">
             <intent-filter>
@@ -24,13 +31,6 @@
                 <action android:name="android.intent.action.VIEW" />
             </intent-filter>
         </activity>
-        <activity android:name=".About" />
     </application>
-
-    <uses-feature
-        android:name="android.hardware.sensor.proximity"
-        android:required="true" />
-
-    <uses-permission android:name="android.hardware.sensor.proximity" />
 
 </manifest>
